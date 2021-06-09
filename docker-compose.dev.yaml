@@ -22,3 +22,16 @@ services:
       - "3000:3000"
     depends_on:
       - "server"
+
+  mongo:
+    container_name: mongodb-crowd-sourced
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: SGG
+    volumes:
+      - "./data/mongodb:/data/db"
+    ports:
+      - "27017:27017"
+    
