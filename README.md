@@ -110,6 +110,33 @@ cd ..
 make buil-dev
 ```
 
+## Challenges we ran into
+
+We faced some challenges, such as,
+
+- Deciding on the details of the workflow
+- Deciding on the technology, and making it easy for everyone to follow along with all the issues and the work needed to be done
+- Deciding on the UI, and the whole team keeping on par with the quick learning curve and idea
+- Trying to convert the idea into the most MVP like as much as possible
+- Maintaining best practices with branches, Github issues & PRs
+
+## Accomplishments that we're proud of
+
+These are,
+- Very rapid development
+- Rapid learning and understanding of the solution
+- Quickly adapting to a workflow
+- Not getting overwhelmed with a sense of feeling we won't  make it
+- Overall, having fun!
+
+## What we learned
+
+"Tech-wise? Maybe not so much. People wise? A lot. It's just a whole another level of having teammates from across many countries and timezones all rooting for each other's success" - Saif Ul Islam, Rubix982
+
+## What's next for Crowd Sourced
+
+Expanding a bit more on the idea, letting users upload their own data, letting 3rd party websites use this functionality in their own web applications, a bit like google captcha
+
 ## Special thanks
 
 [Major League Hacking][MLH] - for the opportunity to be part of this hackathon
