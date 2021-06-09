@@ -60,7 +60,7 @@ This section lists down the technologies which were used in the making of this w
 
 ## Features
 
-Your project will have everything you need to build a modern single-page React app:
+The web application is built by keeping the following aspects in mind,
 
 - 🎁 **Modern** – Project created using the latest features of React (State management using Hooks)
 
