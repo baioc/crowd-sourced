@@ -138,3 +138,8 @@ dmypy.json
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+
+# MISC additions
+
+## This folder is created automatically by Docker Compose for volume mapping
+data/ 
