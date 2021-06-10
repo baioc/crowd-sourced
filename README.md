@@ -33,12 +33,17 @@
 
 - [crowd-sourced](#crowd-sourced)
   - [Table of contents](#table-of-contents)
-  - [About the prjoect](#about-the-prjoect)
+  - [About the project](#about-the-project)
   - [Built With](#built-with)
   - [Features](#features)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+  - [Code Management](#code-management)
+  - [Challenges we ran into](#challenges-we-ran-into)
+  - [Accomplishments that we're proud of](#accomplishments-that-were-proud-of)
+  - [What we learned](#what-we-learned)
+  - [What's next for Crowd Sourced](#whats-next-for-crowd-sourced)
   - [Special thanks](#special-thanks)
   - [Contributing](#contributing)
   - [License](#license)
@@ -109,6 +114,19 @@ yarn
 cd ..
 make buil-dev
 ```
+
+## Code Management
+
+To also `format` and `lint` the Pythonic code for the FlaskAPI, run the following commands while in the `root`,
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+make precommit
+```
+
+This will performing `formatting` with `black`, and `linting` with `flake8`.
 
 ## Challenges we ran into
 

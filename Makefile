@@ -1,13 +1,8 @@
-stop:
-	docker container stop $(docker ps -q)
+# Docker Images
 
-delete:
-	docker container rm $(docker ps -q)
-
+## For removing orphan, closed, containers
 remove:
 	sudo docker-compose down --remove-orphans
-
-# Building Docker Images
 
 ## For Docker Compose, Production
 build-prod:
@@ -57,7 +52,11 @@ images:
 	sudo docker images
 
 server:
-	sudo docker exec -it server-findex /bin/bash
+	sudo docker exec -it server-crowd-sourced /bin/bash
 
 client:
-	sudo docker exec -it client-findex /bin/bash
+	sudo docker exec -it client-crowd-sourced /bin/bash
+
+precommit:
+	black server && flake8 server
+	
