@@ -44,9 +44,9 @@
   - [License](#license)
   - [Usage](#usage)
 
-## About the prjoect
+## About the project
 
-[Crowd Sourcd][Crowd Sourced] is a free platform that lets users from all around the world contribute to labelling textual and graphical data for the intention of data for machine learning and as a open source way of collecting human labelled, gold standard data for machine learning models.
+[Crowd Sourced][Crowd Sourced] is a free platform that lets users from all around the world contribute to labelling textual and graphical data for the intention of data for machine learning and as a open source way of collecting human labelled, gold standard data for machine learning models.
 
 This project comes with a basic UI support, an easy to use interface, set of ready to use interactions and most importantly, all of the content provided with ease for the user to label, so that you can have whatever data for labelling you like in the database without worrying about how the data will be served and labelled.
 
