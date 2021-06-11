@@ -5,9 +5,20 @@ import csv
 
 from mongoengine import (
     connect,
+    Document,
+    StringField,
+    IntField,
+    ListField,
+    ReferenceField,
+    DictField
 )
 
-from schemas import Dataset, Image, Tweet
+import sys
+sys.path.append('../')
+
+from models.dataset import Dataset
+from models.image import Image
+from models.tweet import Tweet
 #%%
 connect(host="mongodb://root:SGG@localhost:27017/demo?authSource=admin")
 
@@ -25,7 +36,7 @@ tweets_ds = Dataset(
 ).save()
 #%%
 
-with open("assets/tweets/tweets_sample.csv", newline='') as csvfile:
+with open("../../assets/tweets/tweets_sample.csv", newline='') as csvfile:
   tweets = csv.reader(csvfile) #, delimiter=' ', quotechar='|')
   for i, row in enumerate(tweets):
     t = Tweet(
@@ -54,7 +65,7 @@ unsplash_ds = Dataset(
     ]
 ).save()
 
-with open("assets/unsplash/unsplash.json") as f:
+with open("../../assets/unsplash/unsplash.json") as f:
     images = json.load(f)
 
 for img in images:
@@ -81,7 +92,7 @@ kitti_ds = Dataset(
     ]
 ).save()
 
-raw = glob.glob("assets/kitti_semantics/*.png")
+raw = glob.glob("../../assets/kitti_semantics/*.png")
 kitti_urls = [url[3:] for url in raw]
 kitti_urls
 

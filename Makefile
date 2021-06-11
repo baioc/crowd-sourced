@@ -68,4 +68,8 @@ datasets-download:
 # process and move datasets to the right folders
 datasets-setup:
 	chmod +x scripts/datasets-setup.sh
+<<<<<<< HEAD
 	./scripts/datasets-setup.sh
+=======
+	./scripts/datasets-setup.sh
+>>>>>>> datasets-2
