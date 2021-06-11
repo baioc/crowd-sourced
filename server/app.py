@@ -1,72 +1,84 @@
-"""This module contains the logic for the main Flask API"""
+"""This module contains the backend logic for the Flask API"""
 
 from flask import Flask, render_template, jsonify
-from werkzeug.exceptions import HTTPException, NotFound
-from pymongo import MongoClient
+from werkzeug.exceptions import HTTPException
+from mongoengine import (
+    connect,
+    Document,
+    StringField,
+    ListField,
+    ReferenceField,
+    DictField,
+)
 
 app = Flask(__name__)
-mongo = MongoClient("mongodb://root:SGG@mongo:27017")
+connect(host="mongodb://root:SGG@mongo:27017/demo?authSource=admin")
+
+
+class Dataset(Document):
+    name = StringField(primary_key=True)
+    content_type = StringField(required=True, choices=["IMAGE", "TEXT"])
+    message = StringField(required=True)
+    label_type = StringField(required=True, choices=["CLASS", "LABEL", "GRID"])
+    options = ListField(StringField())
+
+
+class Instance(Document):
+    dataset = ReferenceField(Dataset, required=True)
+    url = StringField(required=True, unique_with="dataset")
+    labels = DictField(StringField)
 
 
 @app.route("/")
-@app.route("/<user>")
-def label(user="demo"):
+def request():
     """
-    - Returns a JSON data of the results to the frontend
-    on the routes of / and /<user>
-    - '/<user>' route fetches a problem from an user's
-    dataset, defaults to 'demo'
-
-    Parameters:
-        user='demo' (str): User to obtain record for
+    Fetches a random labelling problem from one of the registered datasets.
 
     Returns:
-        JSON(JSON): A JSON format of the data
+        JSON: JSON containing the chosen problem instance and dataset metadata
     """
-    database = mongo[user]
-    if database.list_collection_names() == []:
-        raise NotFound("User not found.")
-    datasets = arbitrary(database["_datasets"])
-    collection = datasets["_id"]
-    instance = arbitrary(database[collection])
-    return jsonify({"dataset": datasets, "instance": instance})
+
+    instance = arbitrary(Instance.objects)
+    dataset = Dataset.objects(name=instance["dataset"]).get()
+    return jsonify({
+        "dataset": dataset.to_mongo(),
+        "instance": {"dataset": instance["dataset"], "url": instance["url"]},
+    })
 
 
 def arbitrary(coll):
     """
-    Returns a random document from given collection
+    Returns an arbitrary item from a given collection.
 
     Parameters:
-        coll (MongoDB Object): An object used to represent a
-    class object from the MongoDB
+        coll (Collection): Object representing a queryable MongoDB Collection
 
     Returns:
-        entry: A random entry selected from an aggregation of the
-    data
+        entry: A random entry selected from an aggregation of the data
     """
+
     for entry in coll.aggregate([{"$sample": {"size": 1}}]):
         return entry
 
 
 @app.errorhandler(Exception)
-def error(error_object):
+def error(err):
     """
-    Responsible for error handling, if any, within the
-    routing mechanism
+    Handles any errors (HTTP and Python) in the server.
 
     Parameters:
-        error (Exception): An exception object to describe
-    the error itself
+        err (Exception): An exception object representing the error itself
 
     Returns:
-        JSON(JSON): Returns an error page for the
-    invalid request
+        JSON(JSON): Returns an error page for the invalid request
     """
+
     code = 500
-    msg = "Internal Server Error:\n" + str(error_object)
-    if isinstance(error_object, HTTPException):
-        code = error_object.code
-        msg = error_object.description
+    msg = "Internal Server Error:\n" + str(err)
+    if isinstance(err, HTTPException):
+        code = err.code
+        msg = err.description
+
     return render_template("error.html", code=code, message=msg)
 
 
