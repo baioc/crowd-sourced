@@ -5,36 +5,11 @@ import csv
 
 from mongoengine import (
     connect,
-    Document,
-    StringField,
-    IntField,
-    ListField,
-    ReferenceField,
-    DictField
 )
 
+from schemas import Dataset, Image, Tweet
 #%%
 connect(host="mongodb://root:SGG@localhost:27017/demo?authSource=admin")
-
-class Dataset(Document):
-    name = StringField(primary_key=True)
-    content_type = StringField(required=True, choices=["IMAGE", "TEXT"])
-    message = StringField(required=True)
-    label_type = StringField(required=True, choices=["CLASS", "LABEL", "GRID"])
-    options = ListField(StringField())
-
-
-class Image(Document):
-    dataset = ReferenceField(Dataset, required=True)
-    url = StringField(required=True, unique_with="dataset")
-    labels = DictField(StringField)
-
-class Tweet(Document):
-    _id = IntField(primary_key=True)
-    dataset = ReferenceField(Dataset, required=True)
-    tweet = StringField(required=True) #, unique_with="dataset")
-    labels = DictField(StringField)
-
 
 # %%
 tweets_ds = Dataset(
@@ -50,7 +25,7 @@ tweets_ds = Dataset(
 ).save()
 #%%
 
-with open("../assets/tweets/tweets.csv", newline='') as csvfile:
+with open("assets/tweets/tweets_sample.csv", newline='') as csvfile:
   tweets = csv.reader(csvfile) #, delimiter=' ', quotechar='|')
   for i, row in enumerate(tweets):
     t = Tweet(
@@ -79,7 +54,7 @@ unsplash_ds = Dataset(
     ]
 ).save()
 
-with open("../assets/unsplash/unsplash.json") as f:
+with open("assets/unsplash/unsplash.json") as f:
     images = json.load(f)
 
 for img in images:
@@ -106,7 +81,7 @@ kitti_ds = Dataset(
     ]
 ).save()
 
-raw = glob.glob("../assets/kitti_semantics/*.png")
+raw = glob.glob("assets/kitti_semantics/*.png")
 kitti_urls = [url[3:] for url in raw]
 kitti_urls
 

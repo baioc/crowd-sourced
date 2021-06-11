@@ -88,18 +88,6 @@ To start and build the project, you need to have,
 - **yarn** - you can get the that [here](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 - **Linux** - this project was built with developers using Linux, since the main build is done with `Makefile`
 
-### Datasets setup
-
-Download the datasets:
-```bash
-make datasets-download
-```
-
-Some preprocessing and organization:
-```bash
-make datasets-setup
-```
-
 ### Installation
 
 After you've setup docker, simply follow the steps, or just run the code snippet at the end of this seciton,
@@ -138,7 +126,7 @@ pip install -r requirements.txt
 make precommit
 ```
 
-This will performing `formatting` with `black`, and `linting` with `flake8`.
+This will perform `formatting` with `black`, and `linting` with `flake8`.
 
 ## Challenges we ran into
 
