@@ -1,5 +1,5 @@
-# Get the latest NodeJS image from DockerHub
-FROM node
+# Get the NodeJS Erbium image from DockerHub
+FROM node:12
 
 # set working directory
 WORKDIR /App
@@ -12,7 +12,7 @@ COPY package.json /App/
 COPY yarn.lock /App/
 
 # install app dependencies
-RUN yarn && yarn global add react-scripts 
+RUN npm i && npm -g install react-scripts 
 
 # add app
 COPY . /App/
