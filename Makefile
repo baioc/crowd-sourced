@@ -60,3 +60,12 @@ client:
 precommit:
 	black server && flake8 server
 	
+# download datasets
+datasets-download:
+	chmod +x scripts/datasets-download.sh
+	./scripts/datasets-download.sh
+
+# process and move datasets to the right folders
+datasets-setup:
+	chmod +x scripts/datasets-setup.sh
+	./scripts/datasets-setup.sh

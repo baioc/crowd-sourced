@@ -7,7 +7,7 @@ import os
 # for info on available params:
 # https://unsplash.com/documentation#get-a-topic
 topic = "nature"
-n_images = 5
+n_images = 100
 orientation = "landscape"
 order_by = "popular"
 
@@ -16,9 +16,6 @@ key = "Ye_-eyGujb_ub1gSiT7KjHKO516Sq_jW7QVCvqYgbjM"
 
 # api-endpoint
 URL = f"https://api.unsplash.com/topics/{topic}/photos"
-  
-# location given here
-location = "delhi technological university"
   
 # defining a params dict for the parameters to be sent to the API
 PARAMS = {
@@ -40,9 +37,8 @@ data = [{
 ]
   
 #%%  
-filename = "../assets/unsplash/unsplash.json"
+filename = "assets/unsplash/unsplash.json"
 os.makedirs(os.path.dirname(filename), exist_ok=True)
 
 with open(filename, 'w') as f:
     json.dump(data, f)
-# %%
