@@ -5,8 +5,8 @@ from werkzeug.exceptions import HTTPException
 from mongoengine import connect
 
 # Local imports
-# TODO: transition from `Instance` to `Image`
-from db.schemas import Dataset, Image, Tweet, Instance
+from models.instance import Instance
+from models.dataset import Dataset
 
 app = Flask(__name__)
 connect(host="mongodb://root:SGG@mongo:27017/demo?authSource=admin")
