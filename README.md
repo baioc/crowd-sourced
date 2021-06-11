@@ -128,7 +128,19 @@ pip install -r requirements.txt
 make precommit
 ```
 
-This will performing `formatting` with `black`, and `linting` with `flake8`.
+This will perform `formatting` with `black`, and `linting` with `flake8`.
+
+### Datasets setup
+
+Download the datasets:
+```bash
+make datasets-download
+```
+
+Loading to `MongoDB`:
+```bash
+make datasets-setup
+```
 
 ## Challenges we ran into
 
