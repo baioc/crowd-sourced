@@ -144,3 +144,4 @@ dmypy.json
 ## This folder is created automatically by Docker Compose for volume mapping
 data/ 
 .vscode/
+server/shared/json/
