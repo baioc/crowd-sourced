@@ -90,18 +90,6 @@ To start and build the project, you need to have,
 - **yarn** - you can get the that [here](https://classic.yarnpkg.com/en/docs/install/#debian-stable)
 - **Linux** - this project was built with developers using Linux, since the main build is done with `Makefile`
 
-### Datasets setup
-
-Download the datasets:
-```bash
-make datasets-download
-```
-
-Loading to `MongoDB`:
-```bash
-make datasets-setup
-```
-
 ### Installation
 
 After you've setup docker, simply follow the steps, or just run the code snippet at the end of this seciton,
@@ -141,6 +129,18 @@ make precommit
 ```
 
 This will perform `formatting` with `black`, and `linting` with `flake8`.
+
+### Datasets setup
+
+Download the datasets:
+```bash
+make datasets-download
+```
+
+Loading to `MongoDB`:
+```bash
+make datasets-setup
+```
 
 ## Challenges we ran into
 
