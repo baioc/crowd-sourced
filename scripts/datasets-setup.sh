@@ -9,3 +9,8 @@ python py_scripts/sample_csv.py 2000 tweets.csv tweets_sample.csv
 mkdir assets/tweets
 mv tweets_sample.csv assets/tweets/
 rm tweets.csv
+
+# loading into MongoDB
+cd server/db
+python datasets_loading.py
+cd ../../

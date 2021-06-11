@@ -97,7 +97,7 @@ Download the datasets:
 make datasets-download
 ```
 
-Some preprocessing and organization:
+Loading to `MongoDB`:
 ```bash
 make datasets-setup
 ```
