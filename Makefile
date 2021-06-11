@@ -67,3 +67,13 @@ gen-data:
 save-gen-data-to-db:
 	sudo chmod +x scripts/save-gen-data-to-db.sh
 	./scripts/save-gen-data-to-db.sh
+	
+# download datasets
+datasets-download:
+	chmod +x scripts/datasets-download.sh
+	./scripts/datasets-download.sh
+
+# process and move datasets to the right folders
+datasets-setup:
+	chmod +x scripts/datasets-setup.sh
+	./scripts/datasets-setup.sh
