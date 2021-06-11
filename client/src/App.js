@@ -1,17 +1,51 @@
-import React from 'react';
-import { useRoutes } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/core';
-import routes from './routes';
-import './App.css';
+import React, { useRef, useEffect } from 'react';
+import { useLocation, Switch } from 'react-router-dom';
+import AppRoute from './utils/AppRoute';
+import ScrollReveal from './utils/ScrollReveal';
+import ReactGA from 'react-ga';
+
+// Layouts
+import LayoutDefault from './layouts/LayoutDefault';
+
+// Views 
+import Home from './views/Home';
+import Label from'./views/Label';
+import Options from './views/Options';
+import Select from './views/Select';
+
+// Initialize Google Analytics
+ReactGA.initialize(process.env.REACT_APP_GA_CODE);
+
+const trackPage = page => {
+  ReactGA.set({ page });
+  ReactGA.pageview(page);
+};
 
 const App = () => {
-  const routing = useRoutes(routes);
+
+  const childRef = useRef();
+  let location = useLocation();
+
+  useEffect(() => {
+    const page = location.pathname;
+    document.body.classList.add('is-loaded')
+    childRef.current.init();
+    trackPage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   return (
-    <ThemeProvider>
-      {routing}
-    </ThemeProvider>
+    <ScrollReveal
+      ref={childRef}
+      children={() => (
+        <Switch>
+          <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
+          <AppRoute exact path="/label" component={Label}/>
+          <AppRoute exact path="/options" component={Options}/>
+          <AppRoute exact path="/select" component={Select}/>
+        </Switch>
+      )} />
   );
-};
+}
 
 export default App;
