@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Button, makeStyles } from '@material-ui/core';
+import { Grid, makeStyles } from '@material-ui/core';
 
 // Local imports
 import { TextHeader } from '../TextHeader';

@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Button, Icon, TextField, Paper, Typography } from "@material-ui/core";
+import { Button, TextField, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowRightAltOutlinedIcon from '@material-ui/icons/ArrowRightAltOutlined';
 
