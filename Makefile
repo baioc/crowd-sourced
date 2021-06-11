@@ -58,5 +58,5 @@ client:
 	sudo docker exec -it client-crowd-sourced /bin/bash
 
 precommit:
-	black server && flake8 server
+	flake8 server && black server
 	

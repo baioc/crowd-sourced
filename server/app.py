@@ -2,31 +2,14 @@
 
 from flask import Flask, render_template, jsonify, request, Response
 from werkzeug.exceptions import HTTPException
-from mongoengine import (
-    connect,
-    Document,
-    StringField,
-    ListField,
-    ReferenceField,
-    DictField,
-)
+from mongoengine import connect
+
+# Local imports
+from .models.instance import Instance
+from .models.dataset import Dataset
 
 app = Flask(__name__)
 connect(host="mongodb://root:SGG@mongo:27017/demo?authSource=admin")
-
-
-class Dataset(Document):
-    name = StringField(primary_key=True)
-    content_type = StringField(required=True, choices=["IMAGE", "TEXT"])
-    message = StringField(required=True)
-    label_type = StringField(required=True, choices=["CLASS", "LABEL", "GRID"])
-    options = ListField(StringField())
-
-
-class Instance(Document):
-    dataset = ReferenceField(Dataset, required=True)
-    url = StringField(required=True, unique_with="dataset")
-    labels = DictField()  # label -> frequency
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -54,7 +37,7 @@ def index():
 
         instance = Instance.objects(dataset=dataset_id, url=instance_id).get()
         labels = instance["labels"]
-        frequency = labels[label] + 1 if label in labels else 0
+        frequency = labels[label] + 1 if label in labels else 1
         labels[label] = frequency
         instance.save()
 
