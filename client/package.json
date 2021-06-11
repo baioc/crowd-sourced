@@ -10,6 +10,7 @@
     "@material-ui/lab": "latest",
     "@material-ui/styles": "latest",
     "classnames": "^2.2.6",
+    "dotenv": "^10.0.0",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
     "react": "^16.13.1",
