@@ -1,8 +1,8 @@
-import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     appbar: {
@@ -16,12 +16,12 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '20px',
         lineHeight: '37px',
         /* identical to box height */
-        
+
         display: 'flex',
         alignItems: 'center',
-        
-        color: '#FFFFFF',        
-    }    
+
+        color: '#FFFFFF',
+    }
 }));
 
 export default function Bar({ content }) {
@@ -31,7 +31,7 @@ export default function Bar({ content }) {
         <AppBar className={classes.appbar} position="static">
             <Toolbar>
                 <Typography variant="h6" className={classes.font}>
-                    {content}
+                    <a href="/">{content}</a>
                 </Typography>
             </Toolbar>
         </AppBar>
