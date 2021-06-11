@@ -9,8 +9,6 @@ from mongoengine import (
     ListField,
     ReferenceField,
     DictField,
-    IntField,
-    DoesNotExist
 )
 
 app = Flask(__name__)
@@ -28,7 +26,7 @@ class Dataset(Document):
 class Instance(Document):
     dataset = ReferenceField(Dataset, required=True)
     url = StringField(required=True, unique_with="dataset")
-    labels = DictField(IntField())
+    labels = DictField()  # label -> frequency
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -51,23 +49,16 @@ def index():
         dataset_id = answer.get("dataset_id")
         instance_id = answer.get("instance_id")
         label = answer.get("label")
-        frequency = -1
-        try:
-            doc = Instance.objects(dataset=dataset_id, url=instance_id).get()
-            labels = doc["labels"]
-            frequency = labels[label] + 1 if label in labels else 0
-            labels[label] = frequency
-            doc.save()
-        except DoesNotExist:
-            pass  # TODO: query argument validation
-        return jsonify(
-            {
-                "dataset_id": dataset_id,
-                "instance_id": instance_id,
-                "label": label,
-                "frequency": frequency,
-            }
-        )
+        if not answer_is_valid(dataset_id, instance_id, label):
+            raise HTTPException(response=Response(status=400))
+
+        instance = Instance.objects(dataset=dataset_id, url=instance_id).get()
+        labels = instance["labels"]
+        frequency = labels[label] + 1 if label in labels else 0
+        labels[label] = frequency
+        instance.save()
+
+        return Response(status=201)
 
 
 def arbitrary(coll):
@@ -85,25 +76,60 @@ def arbitrary(coll):
         return entry
 
 
+def answer_is_valid(dataset_id, instance_id, answer):
+    """
+    Checks whether an answer to a labelling problem is valid.
+
+    Parameters:
+        answer (JSON): Answer object containing dataset and instances id, as
+                       well as the answered label itself
+
+    Returns:
+        ok (Boolean): Whether the answer is valid or not
+    """
+
+    if not dataset_id or not instance_id or not answer:  # all required
+        return False
+
+    instance = Instance.objects(dataset=dataset_id, url=instance_id).first()
+    if instance is None:
+        return False
+
+    dataset = Dataset.objects(name=dataset_id).get()
+    type = dataset["label_type"]
+    options = dataset["options"]
+    if type not in ["CLASS", "LABEL", "GRID"]:
+        return False
+    elif type == "CLASS" and answer not in options:
+        return False
+    elif type == "LABEL" and answer.trim() == "":
+        return False  # XXX: we could apply some regex for text validation
+    elif type == "GRID":
+        # TODO: 'GRID' answer should be a collection of selections
+        raise HTTPException(response=Response(status=501))  # "not implemented"
+
+    return True
+
+
 @app.errorhandler(Exception)
 def error(err):
     """
-    Handles any errors (HTTP and Python) in the server.
+    Handles any errors (standard HTTP and Python exceptions) in the server.
 
     Parameters:
         err (Exception): An exception object representing the error itself
 
     Returns:
-        JSON(JSON): Returns an error page for the invalid request
+        (HTML): Error page for the user to see
     """
 
-    code = 500
+    code = 500  # default
     msg = "Internal Server Error:\n" + str(err)
     if isinstance(err, HTTPException):
         code = err.code
         msg = err.description
 
-    return render_template("error.html", code=code, message=msg)
+    return render_template("error.html", code=code, message=msg), code
 
 
 if __name__ == "__main__":
