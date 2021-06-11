@@ -1,6 +1,6 @@
 """This module contains the backend logic for the Flask API"""
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request, Response
 from werkzeug.exceptions import HTTPException
 from mongoengine import (
     connect,
@@ -9,6 +9,8 @@ from mongoengine import (
     ListField,
     ReferenceField,
     DictField,
+    IntField,
+    DoesNotExist
 )
 
 app = Flask(__name__)
@@ -26,24 +28,46 @@ class Dataset(Document):
 class Instance(Document):
     dataset = ReferenceField(Dataset, required=True)
     url = StringField(required=True, unique_with="dataset")
-    labels = DictField(StringField)
+    labels = DictField(IntField())
 
 
-@app.route("/")
-def request():
-    """
-    Fetches a random labelling problem from one of the registered datasets.
+@app.route("/", methods=["GET", "POST"])
+def index():
+    """GETs a random labelling problem from one of the registered datasets, or
+    processes an answer being POSTed back by a client."""
 
-    Returns:
-        JSON: JSON containing the chosen problem instance and dataset metadata
-    """
+    if request.method == "GET":
+        instance = arbitrary(Instance.objects)
+        dataset = Dataset.objects(name=instance["dataset"]).get()
+        return jsonify(
+            {
+                "dataset": dataset.to_mongo(),
+                "instance": {"_id": instance["url"]},
+            }
+        )
 
-    instance = arbitrary(Instance.objects)
-    dataset = Dataset.objects(name=instance["dataset"]).get()
-    return jsonify({
-        "dataset": dataset.to_mongo(),
-        "instance": {"dataset": instance["dataset"], "url": instance["url"]},
-    })
+    elif request.method == "POST":
+        answer = request.get_json()
+        dataset_id = answer.get("dataset_id")
+        instance_id = answer.get("instance_id")
+        label = answer.get("label")
+        frequency = -1
+        try:
+            doc = Instance.objects(dataset=dataset_id, url=instance_id).get()
+            labels = doc["labels"]
+            frequency = labels[label] + 1 if label in labels else 0
+            labels[label] = frequency
+            doc.save()
+        except DoesNotExist:
+            pass  # TODO: query argument validation
+        return jsonify(
+            {
+                "dataset_id": dataset_id,
+                "instance_id": instance_id,
+                "label": label,
+                "frequency": frequency,
+            }
+        )
 
 
 def arbitrary(coll):
