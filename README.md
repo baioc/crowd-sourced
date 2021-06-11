@@ -26,6 +26,8 @@
     <a href="https://github.com/baioc/crowd-sourced/issues">Report Bug</a>
     ·
     <a href="https://github.com/baioc/crowd-sourced/issues">Request Feature</a>
+    ·
+    <a href="https://crowd-sourced.vercel.app/">Vercel View</a>
   </p>
 </p>
 
