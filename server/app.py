@@ -1,73 +1,135 @@
-"""This module contains the logic for the main Flask API"""
+"""This module contains the backend logic for the Flask API"""
 
-from flask import Flask, render_template, jsonify
-from werkzeug.exceptions import HTTPException, NotFound
-from pymongo import MongoClient
+from flask import Flask, render_template, jsonify, request, Response
+from werkzeug.exceptions import HTTPException
+from mongoengine import (
+    connect,
+    Document,
+    StringField,
+    ListField,
+    ReferenceField,
+    DictField,
+)
 
 app = Flask(__name__)
-mongo = MongoClient("mongodb://root:SGG@mongo:27017")
+connect(host="mongodb://root:SGG@mongo:27017/demo?authSource=admin")
 
 
-@app.route("/")
-@app.route("/<user>")
-def label(user="demo"):
-    """
-    - Returns a JSON data of the results to the frontend
-    on the routes of / and /<user>
-    - '/<user>' route fetches a problem from an user's
-    dataset, defaults to 'demo'
+class Dataset(Document):
+    name = StringField(primary_key=True)
+    content_type = StringField(required=True, choices=["IMAGE", "TEXT"])
+    message = StringField(required=True)
+    label_type = StringField(required=True, choices=["CLASS", "LABEL", "GRID"])
+    options = ListField(StringField())
 
-    Parameters:
-        user='demo' (str): User to obtain record for
 
-    Returns:
-        JSON(JSON): A JSON format of the data
-    """
-    database = mongo[user]
-    if database.list_collection_names() == []:
-        raise NotFound("User not found.")
-    datasets = arbitrary(database["_datasets"])
-    collection = datasets["_id"]
-    instance = arbitrary(database[collection])
-    return jsonify({"dataset": datasets, "instance": instance})
+class Instance(Document):
+    dataset = ReferenceField(Dataset, required=True)
+    url = StringField(required=True, unique_with="dataset")
+    labels = DictField()  # label -> frequency
+
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    """GETs a random labelling problem from one of the registered datasets, or
+    processes an answer being POSTed back by a client."""
+
+    if request.method == "GET":
+        instance = arbitrary(Instance.objects)
+        dataset = Dataset.objects(name=instance["dataset"]).get()
+        return jsonify(
+            {
+                "dataset": dataset.to_mongo(),
+                "instance": {"_id": instance["url"]},
+            }
+        )
+
+    elif request.method == "POST":
+        answer = request.get_json()
+        dataset_id = answer.get("dataset_id")
+        instance_id = answer.get("instance_id")
+        label = answer.get("label")
+        if not answer_is_valid(dataset_id, instance_id, label):
+            raise HTTPException(response=Response(status=400))
+
+        instance = Instance.objects(dataset=dataset_id, url=instance_id).get()
+        labels = instance["labels"]
+        frequency = labels[label] + 1 if label in labels else 0
+        labels[label] = frequency
+        instance.save()
+
+        return Response(status=201)
 
 
 def arbitrary(coll):
     """
-    Returns a random document from given collection
+    Returns an arbitrary item from a given collection.
 
     Parameters:
-        coll (MongoDB Object): An object used to represent a
-    class object from the MongoDB
+        coll (Collection): Object representing a queryable MongoDB Collection
 
     Returns:
-        entry: A random entry selected from an aggregation of the
-    data
+        entry: A random entry selected from an aggregation of the data
     """
+
     for entry in coll.aggregate([{"$sample": {"size": 1}}]):
         return entry
 
 
-@app.errorhandler(Exception)
-def error(error_object):
+def answer_is_valid(dataset_id, instance_id, answer):
     """
-    Responsible for error handling, if any, within the
-    routing mechanism
+    Checks whether an answer to a labelling problem is valid.
 
     Parameters:
-        error (Exception): An exception object to describe
-    the error itself
+        answer (JSON): Answer object containing dataset and instances id, as
+                       well as the answered label itself
 
     Returns:
-        JSON(JSON): Returns an error page for the
-    invalid request
+        ok (Boolean): Whether the answer is valid or not
     """
-    code = 500
-    msg = "Internal Server Error:\n" + str(error_object)
-    if isinstance(error_object, HTTPException):
-        code = error_object.code
-        msg = error_object.description
-    return render_template("error.html", code=code, message=msg)
+
+    if not dataset_id or not instance_id or not answer:  # all required
+        return False
+
+    instance = Instance.objects(dataset=dataset_id, url=instance_id).first()
+    if instance is None:
+        return False
+
+    dataset = Dataset.objects(name=dataset_id).get()
+    type = dataset["label_type"]
+    options = dataset["options"]
+    if type not in ["CLASS", "LABEL", "GRID"]:
+        return False
+    elif type == "CLASS" and answer not in options:
+        return False
+    elif type == "LABEL" and answer.trim() == "":
+        return False  # XXX: we could apply some regex for text validation
+    elif type == "GRID":
+        # TODO: 'GRID' answer should be a collection of selections
+        raise HTTPException(response=Response(status=501))  # "not implemented"
+
+    return True
+
+
+@app.errorhandler(Exception)
+def error(err):
+    """
+    Handles any errors (standard HTTP and Python exceptions) in the server.
+
+    Parameters:
+        err (Exception): An exception object representing the error itself
+
+    Returns:
+        (HTML): Error page for the user to see
+    """
+
+    code = 500  # default
+    msg = "Internal Server Error:\n" + str(err)
+    if isinstance(err, HTTPException):
+        code = err.code
+        msg = err.description
+
+    return render_template("error.html", code=code, message=msg), code
 
 
 if __name__ == "__main__":
