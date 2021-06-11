@@ -59,6 +59,14 @@ client:
 
 precommit:
 	flake8 server && black server
+
+gen-data:
+	@ sudo chmod +x server/scripts/generate_json.sh
+	@ bash ./server/scripts/generate_json.sh ./server/shared/img/Tripix ./server/shared/json/Tripix
+
+save-gen-data-to-db:
+	sudo chmod +x scripts/save-gen-data-to-db.sh
+	./scripts/save-gen-data-to-db.sh
 	
 # download datasets
 datasets-download:
