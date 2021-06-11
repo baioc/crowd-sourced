@@ -1,0 +1,19 @@
+{
+  "_id": "Tripix",
+  "content_type": "IMAGE",
+  "message": "Please select the label that best describes what is being captured in this photograph.",
+  "label_type": "CLASS",
+  "options": [
+    "Visual Art (including statues and paintings)",
+    "Objects",
+    "People",
+    "Animals",
+    "Plants",
+    "Sky",
+    "Water",
+    "Landscape",
+    "Architecture (internal)",
+    "Monuments (external)",
+    "None / Unknown"
+  ]
+}
