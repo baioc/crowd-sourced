@@ -12,10 +12,6 @@ build-prod:
 build-dev:
 	sudo chmod +x scripts/build-dev.sh
 	./scripts/build-dev.sh
-	chmod +x scripts/datasets-download.sh
-	./scripts/datasets-download.sh
-	chmod +x scripts/datasets-setup.sh
-	./scripts/datasets-setup.sh
 
 ## For building only server image
 build-server:

@@ -11,4 +11,5 @@ mv tweets_sample.csv assets/tweets/
 rm tweets.csv
 
 # loading into `MongoDB`
+pip install mongoengine
 python server/db/datasets_loading.py
