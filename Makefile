@@ -21,7 +21,13 @@ build-server:
 ## For building only client image
 build-client:
 	sudo chmod +x scripts/build-client.sh
-	./scripts/build-client.sh	
+	./scripts/build-client.sh
+
+build-server-crowd-sourced:
+	docker-compose build --no-cache server
+
+build-client-crowd-sourced:
+	docker-compose build --no-cache client
 
 # Starting Docker Images
 

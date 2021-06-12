@@ -2,7 +2,7 @@ from mongoengine import connect
 import json
 import os
 
-connect(host="mongodb://root:SGG@localhost:27017/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false")
+connect(host="mongodb://root:SGG@localhost:27017/demo?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false")
 
 from models.instance import Instance
 
