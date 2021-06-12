@@ -1,31 +1,30 @@
-"""This module contains the backend logic for the Flask API"""
-
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, Response, request, jsonify, render_template
 from werkzeug.exceptions import HTTPException
 from mongoengine import connect
+
+app = Flask(__name__)
+connect(host='mongodb://root:SGG@mongo:27017/test?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false')
 
 # Local imports
 from models.instance import Instance
 from models.dataset import Dataset
 
-app = Flask(__name__)
-connect(host="mongodb://root:SGG@mongo:27017/demo?authSource=admin")
-
-
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     """GETs a random labelling problem from one of the registered datasets, or
     processes an answer being POSTed back by a client."""
 
     if request.method == "GET":
         instance = arbitrary(Instance.objects)
-        dataset = Dataset.objects(name=instance["dataset"]).get()
-        return jsonify(
-            {
-                "dataset": dataset.to_mongo(),
-                "instance": {"_id": instance["url"]},
-            }
-        )
+        print(Dataset.objects(label_type='CLASS'))
+        return 'helooddffdfdfddfdfdooolo, world'
+        # dataset = Dataset.objects(_id=instance["dataset"]).get()
+        # return jsonify(
+        #     {
+        #         "dataset": dataset.to_mongo(),
+        #         "instance": {"_id": instance["url"]},
+        #     }
+        # )
 
     elif request.method == "POST":
         answer = request.get_json()
@@ -41,8 +40,8 @@ def index():
         labels[label] = frequency
         instance.save()
 
-        return Response(status=201)
-
+        return Response(status=201)    
+    return f'Change made!'
 
 def arbitrary(coll):
     """
@@ -56,8 +55,7 @@ def arbitrary(coll):
     """
 
     for entry in coll.aggregate([{"$sample": {"size": 1}}]):
-        return entry
-
+        return entry    
 
 def answer_is_valid(dataset_id, instance_id, answer):
     """
@@ -92,27 +90,6 @@ def answer_is_valid(dataset_id, instance_id, answer):
         raise HTTPException(response=Response(status=501))  # "not implemented"
 
     return True
-
-
-@app.errorhandler(Exception)
-def error(err):
-    """
-    Handles any errors (standard HTTP and Python exceptions) in the server.
-
-    Parameters:
-        err (Exception): An exception object representing the error itself
-
-    Returns:
-        (HTML): Error page for the user to see
-    """
-
-    code = 500  # default
-    msg = "Internal Server Error:\n" + str(err)
-    if isinstance(err, HTTPException):
-        code = err.code
-        msg = err.description
-
-    return render_template("error.html", code=code, message=msg), code
 
 
 if __name__ == "__main__":

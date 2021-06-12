@@ -6,6 +6,11 @@ services:
     container_name: server-crowd-sourced
     build: ./server
     restart: always
+    volumes: 
+      - './server:/app'
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=crowd-sourced
     ports:
       - "8080:8080"
 
@@ -30,6 +35,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: SGG
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null      
     volumes:
       - "./data/mongodb:/data/db"
     ports:
