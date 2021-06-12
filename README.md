@@ -28,6 +28,8 @@
     <a href="https://github.com/baioc/crowd-sourced/issues">Request Feature</a>
     ·
     <a href="https://crowd-sourced.vercel.app/">Vercel View</a>
+    ·
+    <a href="https://devpost.com/software/crowd-sourcd">DevPost Submission</a>
   </p>
 </p>
 
@@ -64,10 +66,12 @@
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
   - [Code Management](#code-management)
+    - [Datasets setup](#datasets-setup)
   - [Challenges we ran into](#challenges-we-ran-into)
   - [Accomplishments that we're proud of](#accomplishments-that-were-proud-of)
   - [What we learned](#what-we-learned)
   - [What's next for Crowd Sourced](#whats-next-for-crowd-sourced)
+  - [Final Screenshots](#final-screenshots)
   - [Video Demo](#video-demo)
   - [Special thanks](#special-thanks)
   - [Contributing](#contributing)
@@ -168,12 +172,14 @@ This will perform `formatting` with `black`, and `linting` with `flake8`.
 
 ### Datasets setup
 
-Download the datasets:
+Download the datasets,
+
 ```bash
 make datasets-download
 ```
 
-Loading to `MongoDB`:
+Loading to `MongoDB`,
+
 ```bash
 make datasets-setup
 ```
@@ -217,6 +223,14 @@ A lot, for all of us,
 
 Expanding a bit more on the idea, letting users upload their own data, letting 3rd party websites use this functionality in their own web applications, a bit like google captcha. We might go on to make a personal profile for each user, with proper authentication and everything, for each user to upload his/her own personal datasets to be labeled, and then easily introducing a more expansive platform with deals with audio and other formats of data sets well.
 
+## Final Screenshots
+
+| | |
+|:-------------------------:|:-------------------------:|
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/2.png"> Home Landing Page | <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/3.png"> Options Page |
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/4.png"> Select Images Page | <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/5.png"> Options Page |
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/6.png"> Docker Compose Running | <img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/7.png"> Automated Data Generation Thanks To Makefile |
+|<img width="1604" alt="screen shot 2017-08-07 at 12 18 15 pm" src="./assets/img/8.png"> Dataset added from ./server/shared/img/ | |
 ## Video Demo
 
 The video demo can be found below,
